@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>臺灣歷史博物館</title>
+<style>
+  :root {
+    --navy: #1a1a2e;
+    --gold: #d4a843;
+    --white: #ffffff;
+    --light-gray: #f2f2f0;
+    --mid-gray: #cccccc;
+    --dark-gray: #555;
+    --border: #e0e0e0;
+    --accent-bg: #f8f6f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Helvetica Neue', 'Noto Sans TC', sans-serif;
+    background: var(--light-gray);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  /* ── Phone Frame ── */
+  .phone {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    background: var(--navy);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.2;
+    flex: 1;
+    text-align: center;
+  }
+  .topbar-title span {
+    display: block;
+    font-size: 10px;
+    color: var(--mid-gray);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .icon-btn:active { background: rgba(255,255,255,0.1); }
+  .icon-btn svg { stroke: var(--white); fill: none; }
+
+  /* ── Hero Banner ── */
+  .hero {
+    background: var(--navy);
+    padding: 24px 18px 20px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .hero-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hero-headline {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .hero-sub {
+    font-size: 12px;
+    color: var(--mid-gray);
+    margin-top: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Accordion Container ── */
+  .accordion { border-top: 1px solid var(--border); }
+
+  /* ── Accordion Item ── */
+  .accordion-item { border-bottom: 1px solid var(--border); }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    padding: 18px 18px;
+    cursor: pointer;
+    background: var(--white);
+    transition: background 0.2s;
+    user-select: none;
+    gap: 14px;
+  }
+  .accordion-header:active { background: var(--accent-bg); }
+  .accordion-header.active {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .accordion-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .accordion-icon svg {
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .accordion-label {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--navy);
+    text-transform: uppercase;
+  }
+  .accordion-header.active .accordion-label { color: var(--white); }
+
+  .accordion-selected-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+    background: rgba(212,168,67,0.12);
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .accordion-header.active .accordion-selected-tag {
+    background: rgba(212,168,67,0.25);
+  }
+
+  .accordion-chevron {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    stroke: var(--dark-gray);
+    fill: none;
+  }
+  .accordion-header.active .accordion-chevron { stroke: var(--mid-gray); }
+  .accordion-header.active .accordion-chevron.rotated { transform: rotate(180deg); }
+
+  /* ── Accordion Body ── */
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+    background: var(--accent-bg);
+  }
+  .accordion-body.open { max-height: 700px; }
+
+  /* ── Tags (我是...) ── */
+  .tags-section { padding: 16px 18px 8px; }
+  .tags-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--dark-gray);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .tags-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tag-chip {
+    padding: 6px 14px;
+    border: 1.5px solid var(--navy);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--white);
+    color: var(--navy);
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .tag-chip.selected {
+    background: var(--navy);
+    color: var(--gold);
+    border-color: var(--navy);
+  }
+  .tag-chip:active { opacity: 0.7; }
+
+  /* ── Sub Items List ── */
+  .sub-items { padding: 0 0 12px; }
+  .sub-items-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--dark-gray);
+    text-transform: uppercase;
+    padding: 12px 18px 8px;
+    border-top: 1px solid var(--border);
+  }
+  .sub-item {
+    display: flex;
+    align-items: center;
+    padding: 13px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    transition: background 0.15s;
+    gap: 12px;
+  }
+  .sub-item:last-child { border-bottom: none; }
+  .sub-item:active { background: #eef0f5; }
+  .sub-item-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sub-item-icon svg { stroke: var(--gold); fill: none; stroke-width: 1.5; }
+  .sub-item-text { flex: 1; font-size: 13px; font-weight: 600; color: var(--navy); }
+  .sub-item-arrow { stroke: var(--mid-gray); fill: none; }
+
+  /* ── QR Section ── */
+  .qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 18px 20px;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+  }
+  .qr-box {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--navy);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--white);
+    transition: all 0.2s;
+  }
+  .qr-box:active { background: var(--navy); }
+  .qr-box svg { stroke: var(--navy); fill: none; }
+  .qr-box:active svg { stroke: var(--gold); }
+  .qr-label { font-size: 11px; color: var(--dark-gray); font-weight: 500; letter-spacing: 0.04em; }
+
+  /* ── Chat Section ── */
+  .chat-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 18px 20px;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+  }
+  .chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--navy);
+    color: var(--gold);
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .chat-btn:active { background: var(--gold); color: var(--navy); }
+  .chat-btn svg { stroke: currentColor; fill: none; }
+  .chat-label { font-size: 11px; color: var(--dark-gray); font-weight: 500; }
+
+  /* ── 我想問 Items ── */
+  .ask-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    transition: background 0.15s;
+    gap: 12px;
+  }
+  .ask-item:last-child { border-bottom: none; }
+  .ask-item:active { background: #eef0f5; }
+  .ask-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ask-text { flex: 1; font-size: 13px; color: var(--navy); line-height: 1.5; font-weight: 500; }
+
+  /* ── DETAIL OVERLAY ── */
+  .detail-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--white);
+    z-index: 999;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    max-width: 390px;
+    margin: 0 auto;
+  }
+  .detail-overlay.visible { transform: translateX(0); }
+
+  .detail-topbar {
+    background: var(--navy);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .back-btn svg { stroke: var(--gold); fill: none; }
+  .detail-topbar-title {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--white);
+    text-align: center;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .close-btn {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--mid-gray);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+
+  .detail-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .detail-hero {
+    background: var(--navy);
+    padding: 28px 20px 24px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .detail-category {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .detail-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .detail-subtitle {
+    font-size: 12px;
+    color: var(--mid-gray);
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+
+  .detail-section {
+    padding: 20px 20px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .detail-section-title {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: var(--dark-gray);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .detail-card {
+    background: var(--accent-bg);
+    border-left: 3px solid var(--gold);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .detail-card-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .detail-card-text { font-size: 12px; color: var(--dark-gray); line-height: 1.6; }
+
+  .detail-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 20px;
+  }
+  .detail-badge {
+    padding: 5px 12px;
+    background: var(--navy);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+
+  .detail-action-row {
+    padding: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  .detail-action-btn {
+    flex: 1;
+    padding: 13px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn-primary { background: var(--navy); color: var(--gold); border: none; }
+  .btn-secondary { background: var(--white); color: var(--navy); border: 2px solid var(--navy); }
+  .btn-primary:active { background: var(--gold); color: var(--navy); }
+  .btn-secondary:active { background: var(--navy); color: var(--white); }
+
+  .detail-info-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-info-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .detail-info-icon svg { stroke: var(--gold); fill: none; stroke-width: 1.5; }
+  .detail-info-main { flex: 1; }
+  .detail-info-label { font-size: 10px; color: var(--dark-gray); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .detail-info-value { font-size: 14px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+
+  /* ── SEARCH OVERLAY ── */
+  .search-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--navy);
+    z-index: 998;
+    transform: translateY(-100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    max-width: 390px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 18px;
+  }
+  .search-overlay.visible { transform: translateY(0); }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 12px 14px;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .search-bar svg { stroke: var(--gold); fill: none; flex-shrink: 0; }
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .search-bar input::placeholder { color: rgba(255,255,255,0.4); }
+  .search-close {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-align: right;
+    margin-bottom: 24px;
+  }
+  .search-hints { display: flex; flex-wrap: wrap; gap: 8px; }
+  .search-hint {
+    padding: 7px 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--mid-gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-hint:active { border-color: var(--gold); color: var(--gold); }
+  .search-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* ── MENU OVERLAY ── */
+  .menu-overlay {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 80%;
+    max-width: 300px;
+    background: var(--white);
+    z-index: 997;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .menu-overlay.visible { transform: translateX(0); }
+  .menu-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 996;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .menu-backdrop.visible { opacity: 1; pointer-events: auto; }
+  .menu-header {
+    background: var(--navy);
+    padding: 20px 18px;
+  }
+  .menu-header-title { font-size: 13px; font-weight: 800; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+  .menu-header-sub { font-size: 11px; color: var(--mid-gray); margin-top: 4px; }
+  .menu-items { padding: 8px 0; }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .menu-item:active { background: var(--accent-bg); }
+  .menu-item svg { stroke: var(--navy); fill: none; }
+  .menu-item-text { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .menu-close-row {
+    padding: 20px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark-gray);
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+  <!-- ── Top Bar ── -->
+  <div class="topbar">
+    <div class="icon-btn" onclick="openSearch()">
+      <svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2.5">ircle cx="11" cy="11" r="8"/>e x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="topbar-title">
+      臺灣歷史博物館
+      <span>National Museum of Taiwan History</span>
+    </div>
+    <div class="icon-btn" onclick="openMenu()">
+      <svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2.5">e x1="3" y1="6" x2="21" y2="6"/>e x1="3" y1="12" x2="21" y2="12"/>e x1="3" y1="18" x2="21" y2="18"/></svg>
+    </div>
+  </div>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-label">今日開館中 · 09:00–17:00</div>
+    <div class="hero-headline">探索臺灣<br>400年的故事</div>
+    <div class="hero-sub">從此開始</div>
+  </div>
+
+  <!-- ── Accordion ── -->
+  <div class="accordion" id="accordion">
+
+    <!-- 我是... -->
+    <div class="accordion-item">
+      <div class="accordion-header" id="hdr-0" onclick="toggleAccordion(0)">
+        <div class="accordion-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24">ircle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div class="accordion-label">我是…</div>
+        <div class="accordion-selected-tag" id="tag-selected-0">深度學習者</div>
+        <svg class="accordion-chevron" id="chv-0" width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body" id="body-0">
+        <div class="tags-section">
+          <div class="tags-label">選擇你的身份</div>
+          <div class="tags-grid" id="tags-grid">
+            <div class="tag-chip" onclick="selectTag(this,'學生')">學生</div>
+            <div class="tag-chip" onclick="selectTag(this,'親子')">親子</div>
+            <div class="tag-chip" onclick="selectTag(this,'年長者')">年長者</div>
+            <div class="tag-chip" onclick="selectTag(this,'情侶')">情侶</div>
+            <div class="tag-chip selected" onclick="selectTag(this,'深度學習者')">深度學習者</div>
+            <div class="tag-chip" onclick="selectTag(this,'外國旅客')">外國旅客</div>
+            <div class="tag-chip" onclick="selectTag(this,'活動企劃者')">活動企劃者</div>
+          </div>
+        </div>
+        <div class="sub-items">
+          <div class="sub-items-label">為你推薦</div>
+          <div id="identity-items"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我在... -->
+    <div class="accordion-item">
+      <div class="accordion-header" id="hdr-1" onclick="toggleAccordion(1)">
+        <div class="accordion-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>ircle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="accordion-label">我在…</div>
+        <div class="accordion-selected-tag" id="tag-selected-1">定位中</div>
+        <svg class="accordion-chevron" id="chv-1" width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body" id="body-1">
+        <div class="sub-items" style="padding-top:8px">
+          <div id="location-items"></div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-box" onclick="showDetail('qr-location','掃描定位','用 QR Code 精準定位你的所在位置','location')">
+            <svg width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="5" y="5" width="3" height="3"/><rect x="16" y="5" width="3" height="3"/><rect x="5" y="16" width="3" height="3"/><path d="M14 14h2v2h-2zM18 14h3M14 18h2M18 18h3M21 21v-3"/></svg>
+          </div>
+          <div class="qr-label">掃描館內 QR Code 自動定位</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我想要... -->
+    <div class="accordion-item">
+      <div class="accordion-header" id="hdr-2" onclick="toggleAccordion(2)">
+        <div class="accordion-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="accordion-label">我想要…</div>
+        <div class="accordion-selected-tag" id="tag-selected-2">選擇目標</div>
+        <svg class="accordion-chevron" id="chv-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body" id="body-2">
+        <div class="sub-items" style="padding-top:8px">
+          <div id="want-items"></div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-box" onclick="showDetail('qr-want','掃描服務','掃描圖示快速啟動所選服務','star')">
+            <svg width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="5" y="5" width="3" height="3"/><rect x="16" y="5" width="3" height="3"/><rect x="5" y="16" width="3" height="3"/><path d="M14 14h2v2h-2zM18 14h3M14 18h2M18 18h3M21 21v-3"/></svg>
+          </div>
+          <div class="qr-label">掃描館內服務點 QR Code</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我想問... -->
+    <div class="accordion-item">
+      <div class="accordion-header" id="hdr-3" onclick="toggleAccordion(3)">
+        <div class="accordion-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="accordion-label">我想問…</div>
+        <div class="accordion-selected-tag" id="tag-selected-3">AI 助理</div>
+        <svg class="accordion-chevron" id="chv-3" width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body" id="body-3">
+        <div class="sub-items" style="padding-top:8px">
+          <div id="ask-items"></div>
+        </div>
+        <div class="chat-section">
+          <button class="chat-btn" onclick="showDetail('chat-open','開啟 AI 導覽助理','你可以用自然語言問任何問題','chat')">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            開啟 AI 導覽助理
+          </button>
+          <div class="chat-label">即時回答你的每個問題</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /accordion -->
+
+</div><!-- /phone -->
+
+<!-- ── Detail Overlay ── -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-topbar">
+    <div class="back-btn" onclick="closeDetail()">
+      <svg width="16" height="16" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      返回
+    </div>
+    <div class="detail-topbar-title" id="detail-section-label">詳細資訊</div>
+    <div class="close-btn" onclick="closeDetail()">關閉</div>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+</div>
+
+<!-- ── Search Overlay ── -->
+<div class="search-overlay" id="search-overlay">
+  <div class="search-close" onclick="closeSearch()">關閉搜尋 ✕</div>
+  <div class="search-bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2">ircle cx="11" cy="11" r="8"/>e x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" placeholder="搜尋展覽、地點、服務…" autofocus>
+  </div>
+  <div class="search-section-label">熱門搜尋</div>
+  <div class="search-hints">
+    <div class="search-hint">大航海時代</div>
+    <div class="search-hint">無障礙路線</div>
+    <div class="search-hint">親子導覽</div>
+    <div class="search-hint">禮品店</div>
+    <div class="search-hint">特展</div>
+    <div class="search-hint">接駁車</div>
+    <div class="search-hint">育嬰室</div>
+  </div>
+</div>
+
+<!-- ── Menu Overlay ── -->
+<div class="menu-backdrop" id="menu-backdrop" onclick="closeMenu()"></div>
+<div class="menu-overlay" id="menu-overlay">
+  <div class="menu-header">
+    <div class="menu-header-title">選單</div>
+    <div class="menu-header-sub">臺灣歷史博物館</div>
+  </div>
+  <div class="menu-items">
+    <div class="menu-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="menu-item-text">首頁</div></div>
+    <div class="menu-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/>e x1="16" y1="2" x2="16" y2="6"/>e x1="8" y1="2" x2="8" y2="6"/>e x1="3" y1="10" x2="21" y2="10"/></svg><div class="menu-item-text">展覽活動</div></div>
+    <div class="menu-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2">ircle cx="12" cy="12" r="10"/>e x1="12" y1="8" x2="12" y2="12"/>e x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="menu-item-text">參觀資訊</div></div>
+    <div class="menu-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>ircle cx="12" cy="10" r="3"/></svg><div class="menu-item-text">館內地圖</div></div>
+    <div class="menu-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>ircle cx="12" cy="7" r="4"/></svg><div class="menu-item-text">會員專區</div></div>
+    <div class="menu-item"><svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><div class="menu-item-text">聯絡我們</div></div>
+  </div>
+  <div class="menu-close-row" onclick="closeMenu()">✕ 關閉選單</div>
+</div>
+
+<script>
+// ── Data ──
+const identityData = {
+  '學生': [
+    { label: '學生票優惠方案', icon: 'ticket', detail: { category: '我是 · 學生', title: '學生票優惠', sub: '持學生證購票享 5 折優惠，適用於本館所有常設展與特展。', info: [['票價','NT$ 60（半價）'],['適用','學生證或在學證明'],['購票','售票處 / 線上預購']] } },
+    { label: '學習單下載', icon: 'book', detail: { category: '我是 · 學生', title: '展覽學習單', sub: '搭配各展廳設計的學習引導單，可下載或至服務台索取。', info: [['適用年級','國小至高中'],['語言','中文 / 英文'],['索取','服務台免費提供']] } },
+    { label: '校外教學預約', icon: 'calendar', detail: { category: '我是 · 學生', title: '校外教學申請', sub: '20 人以上團體可申請專屬導覽與教育活動，需提前 2 週預約。', info: [['最低人數','20 人'],['提前申請','2 週前'],['費用','依方案而定']] } },
+  ],
+  '親子': [
+    { label: '親子友善設施地圖', icon: 'map', detail: { category: '我是 · 親子', title: '親子設施導覽', sub: '育嬰室、哺乳區、兒童互動區、推車租借等親子友善設施一覽。', info: [['育嬰室','B1 / 2F 各一間'],['哺乳區','1F 服務台旁'],['推車租借','大門口服務台']] } },
+    { label: '兒童互動體驗區', icon: 'star', detail: { category: '我是 · 親子', title: '兒童體驗區', sub: '3–10 歲兒童可在此透過實體互動裝置認識臺灣歷史故事。', info: [['適合年齡','3–10 歲'],['位置','2F 西側'],['費用','免費（含門票）']] } },
+    { label: '今日親子導覽場次', icon: 'calendar', detail: { category: '我是 · 親子', title: '親子導覽時刻表', sub: '今日共有 3 場親子主題導覽，由館員帶領探索重點展品。', info: [['場次 1','10:30 大廳集合'],['場次 2','14:00 大廳集合'],['場次 3','15:30 大廳集合（英文）']] } },
+    { label: '親子餐廳 & 休息區', icon: 'coffee', detail: { category: '我是 · 親子', title: '親子休憩空間', sub: '1F 餐廳設有兒童餐椅及低桌區，戶外草坪亦開放自帶餐點。', info: [['餐廳位置','1F 東翼'],['開放時間','10:00–16:30'],['戶外草坪','全日開放']] } },
+  ],
+  '年長者': [
+    { label: '無障礙路線規劃', icon: 'map', detail: { category: '我是 · 年長者', title: '無障礙動線', sub: '全館設有無障礙坡道、電梯與休息座椅，本頁提供最省力路線建議。', info: [['電梯','大廳 A / B 各一座'],['輪椅租借','大門口服務台'],['愛心席','各展廳均設有']] } },
+    { label: '敬老票優惠', icon: 'ticket', detail: { category: '我是 · 年長者', title: '敬老優惠票', sub: '65 歲以上長者憑身份證件可免費入館參觀所有常設展。', info: [['票價','免費'],['適用','65 歲以上'],['憑證','身分證 / 敬老卡']] } },
+    { label: '語音導覽租借', icon: 'headphone', detail: { category: '我是 · 年長者', title: '語音導覽設備', sub: '提供中文、臺語雙聲道語音導覽機，大字幕版操作介面。', info: [['費用','NT$ 50 / 次'],['語言','中文 / 臺語'],['租借','服務台']] } },
+  ],
+  '情侶': [
+    { label: '精選約會路線', icon: 'heart', detail: { category: '我是 · 情侶', title: '情侶精選路線', sub: '90 分鐘精選路線，串聯最具氛圍感的展廳、拍照熱點與咖啡角落。', info: [['建議時長','90 分鐘'],['亮點','3 個必訪展廳'],['拍照點','5 處推薦']] } },
+    { label: '館內咖啡廳', icon: 'coffee', detail: { category: '我是 · 情侶', title: '博物館咖啡廳', sub: '以臺灣歷史為主題設計的飲品與輕食，適合中途休憩。', info: [['位置','1F 北側'],['招牌飲品','臺式珍奶 / 鳳梨冰沙'],['營業','09:30–16:30']] } },
+    { label: '特展優惠雙人票', icon: 'ticket', detail: { category: '我是 · 情侶', title: '雙人同行優惠', sub: '特展雙人票組合享 85 折，可於線上或售票處購買。', info: [['優惠','雙人 85 折'],['適用','本期特展'],['有效期','本月底前']] } },
+  ],
+  '深度學習者': [
+    { label: '研究員導覽預約', icon: 'book', detail: { category: '我是 · 深度學習者', title: '學術導覽服務', sub: '專業研究員陪同導覽，深入解析文物背景與史學觀點，須提前預約。', info: [['費用','NT$ 500 / 人'],['時長','120 分鐘'],['最低人數','1 人，上限 8 人']] } },
+    { label: '典藏資料庫查詢', icon: 'database', detail: { category: '我是 · 深度學習者', title: '館藏數位資料庫', sub: '超過 15 萬件數位化文物可線上瀏覽，館內設有專用查詢終端機。', info: [['查詢終端','2F 研究室',],['線上入口','collections.nmth.gov.tw'],['開放時間','09:00–16:30']] } },
+    { label: '講座 & 工作坊', icon: 'calendar', detail: { category: '我是 · 深度學習者', title: '本月學術講座', sub: '本月共 4 場專題講座，涵蓋原住民史、海洋文化與日治時期研究。', info: [['場次','4 場 / 本月'],['地點','2F 演講廳'],['報名','官網免費報名']] } },
+    { label: '出版品 & 論文集', icon: 'book', detail: { category: '我是 · 深度學習者', title: '館方出版品', sub: '禮品店設有歷史學術出版品專區，館員亦可提供選書建議。', info: [['位置','1F 禮品店'],['類型','圖錄 / 學術論文'],['語言','中 / 英 / 日']] } },
+  ],
+  '外國旅客': [
+    { label: 'English Audio Guide', icon: 'headphone', detail: { category: 'I Am · Visitor', title: 'Multilingual Audio Guide', sub: 'Audio guides available in English, Japanese, Korean and French. Rent at the service desk.', info: [['Fee','NT$ 50 / visit'],['Languages','EN / JP / KR / FR'],['Rental','Service Desk, 1F']] } },
+    { label: 'English Tour Schedule', icon: 'calendar', detail: { category: 'I Am · Visitor', title: 'English Guided Tours', sub: 'English-language tours run daily at 10:30 and 14:30, meeting at the main lobby.', info: [['Tour 1','10:30 Main Lobby'],['Tour 2','14:30 Main Lobby'],['Duration','60 minutes']] } },
+    { label: 'Cultural Translation Cards', icon: 'star', detail: { category: 'I Am · Visitor', title: 'Cultural Context Cards', sub: 'Pick up bilingual cultural context cards at exhibit entrances to decode historical significance.', info: [['Available','All major exhibits'],['Languages','EN / JP'],['Free','Yes']] } },
+  ],
+  '活動企劃者': [
+    { label: '場地租借申請', icon: 'map', detail: { category: '我是 · 活動企劃者', title: '場地租借', sub: '大廳、演講廳、戶外廣場等場地可申請短期租借，適合文化活動或企業包場。', info: [['容納人數','50–500 人'],['提前申請','1 個月前'],['洽詢','02-XXXX-XXXX']] } },
+    { label: '企業包場導覽', icon: 'calendar', detail: { category: '我是 · 活動企劃者', title: '企業包場服務', sub: '提供非開館時段專屬包場服務，含館員導覽與餐飲協助。', info: [['時段','開館後 / 閉館前'],['最低人數','30 人'],['洽詢','business@nmth.gov.tw']] } },
+    { label: '文創合作提案', icon: 'star', detail: { category: '我是 · 活動企劃者', title: '館方合作提案', sub: '歡迎品牌與文化機構提交聯名企劃，由館方審核後安排說明會。', info: [['提案方式','Email 提交企劃書'],['回覆時效','10 個工作天'],['信箱','partnership@nmth.gov.tw']] } },
+  ],
+};
+
+const locationData = [
+  { label: '博物館大門口', icon: 'door', detail: { category: '我在…', title: '博物館大門口', sub: '你目前在主入口廣場，距售票處約 30 公尺，門票可於此掃碼入場。', info: [['開放','09:00–17:00'],['接駁車','門口右側停靠'],['下一步','直走進入大廳']] } },
+  { label: '售票處', icon: 'ticket', detail: { category: '我在…', title: '售票處', sub: '售票處位於大門入口右側，支援現金、信用卡及行動支付。', info: [['位置','大門右側'],['付款','現金 / 刷卡 / 行動支付'],['注意','預購票請至 E 通道']] } },
+  { label: '展廳間的走廊', icon: 'arrow', detail: { category: '我在…', title: '展廳走廊', sub: '你目前在展廳之間的連接走廊，沿指標可前往各主題展廳。', info: [['附近展廳','大航海時代 / 原住民文化'],['設施','座椅 / 飲水機 / 廁所'],['方向','左轉→大廳，右轉→3號展廳']] } },
+  { label: '休息區', icon: 'coffee', detail: { category: '我在…', title: '休息區', sub: '此處設有座椅、飲水機與簡易點心販賣機，歡迎隨時停留。', info: [['座位數','約 30 席'],['設施','飲水機 / 販賣機'],['Wi-Fi','NMTHmuseum（免費）']] } },
+  { label: '大廳', icon: 'home', detail: { category: '我在…', title: '中央大廳', sub: '博物館核心空間，設有服務台、導覽集合點及本期特展入口。', info: [['服務台','正對入口'],['特展入口','大廳左側'],['無障礙電梯','大廳北側']] } },
+  { label: '廁所', icon: 'droplet', detail: { category: '我在…', title: '廁所', sub: '附近廁所位於走廊東側，設有無障礙廁所、親子廁所與尿布台。', info: [['無障礙廁所','是'],['親子廁所','是'],['育嬰室','廁所旁']] } },
+  { label: '出口', icon: 'exit', detail: { category: '我在…', title: '出口', sub: '你接近出口，離館前可至禮品店選購，接駁車站在出口右方。', info: [['禮品店','出口前左轉'],['接駁車','出口右側，整點發車'],['下次參觀','可加入會員享優惠']] } },
+  { label: '禮品店', icon: 'bag', detail: { category: '我在…', title: '禮品店', sub: '提供各類文創商品、歷史主題紀念品及出版品，支援刷卡消費。', info: [['位置','1F 出口旁'],['營業時間','09:30–17:00'],['付款','現金 / 刷卡 / 行動支付']] } },
+  { label: '服務台', icon: 'info', detail: { category: '我在…', title: '服務台', sub: '服務台提供語音導覽租借、失物招領、輪椅借用及各類諮詢。', info: [['位置','大廳中央'],['服務','導覽 / 輪椅 / 詢問'],['語言','中 / 英 / 日']] } },
+];
+
+const wantData = [
+  { label: '快速換票', icon: 'ticket', detail: { category: '我想要…', title: '快速換票', sub: '線上預購票可至 E 通道快速換票，無須排隊，30 秒完成入場。', info: [['位置','大門 E 通道'],['步驟','出示 QR Code 即可'],['省時','平均 30 秒']] } },
+  { label: '建立導覽群組', icon: 'users', detail: { category: '我想要…', title: '建立導覽群組', sub: '建立群組後可分享即時位置給同行夥伴，設定集合點與提醒通知。', info: [['功能','即時位置分享'],['設定','集合點 + 提醒'],['人數','最多 20 人']] } },
+  { label: '知道下一步去哪', icon: 'map', detail: { category: '我想要…', title: '智慧導覽路線', sub: '根據你的身份與停留時間，AI 自動規劃最適合的參觀順序。', info: [['演算依據','身份 + 時間 + 熱度'],['路線類型','精華 60 / 完整 120 分鐘'],['即時更新','避開目前擁擠區域']] } },
+  { label: '避開擁擠區域', icon: 'warning', detail: { category: '我想要…', title: '即時人流地圖', sub: '系統即時顯示各展廳人流狀況，以顏色標示：綠色（舒適）/ 黃色（普通）/ 紅色（擁擠）。', info: [['目前最空','4 號展廳（綠）'],['最擁擠','2 號特展廳（紅）'],['更新頻率','每 3 分鐘']] } },
+  { label: '理解展品', icon: 'book', detail: { category: '我想要…', title: 'AI 展品解說', sub: '對準展品掃描，AI 即時提供深度解說、歷史背景與文化脈絡。', info: [['操作','對準展品掃描 QR Code'],['語言','中 / 英 / 日'],['延伸','可連結典藏資料庫']] } },
+  { label: '參與互動遊戲', icon: 'star', detail: { category: '我想要…', title: '館內互動遊戲', sub: '蒐集各展廳印章，完成任務卡可兌換紀念品，適合親子同樂。', info: [['任務卡','服務台免費索取'],['集章點','8 個展廳'],['獎品','限量文創紀念品']] } },
+  { label: '找位子坐', icon: 'chair', detail: { category: '我想要…', title: '休息座位導航', sub: '地圖標示全館休息座位位置，最近的空位在距你 20 公尺的休息區。', info: [['最近座位','現在位置東側 20 公尺'],['座位總數','全館 120 席'],['無障礙席','各樓層均有']] } },
+  { label: '上廁所', icon: 'droplet', detail: { category: '我想要…', title: '最近廁所導航', sub: '最近廁所在你右手邊走廊盡頭，約 15 公尺，設有親子廁所與尿布台。', info: [['距離','約 15 公尺'],['設施','親子廁所 / 尿布台'],['無障礙','有']] } },
+  { label: '等隊友集合', icon: 'users', detail: { category: '我想要…', title: '設定集合點', sub: '設定集合點後，你的群組成員將同時收到地圖指引通知。', info: [['推薦集合點','大廳服務台前'],['通知方式','App 推播'],['功能','位置共享 + 倒數計時']] } },
+];
+
+const askData = [
+  '現在哪一區人比較少？',
+  '我推嬰兒車，建議走哪一條路線？',
+  '今天有推薦的親子導覽場次嗎？',
+  '這條路有無障礙坡道嗎？',
+  '這個文物的歷史背景是什麼？（外籍文化轉譯）',
+  '最近的廁所（或育嬰室）在哪裡？',
+  '最近的接駁車幾點發車？',
+];
+
+// ── Icons SVG ──
+const icons = {
+  ticket: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M2 9a3 3 0 1 1 0 6V9zM22 9a3 3 0 1 0 0 6V9z"/><rect x="2" y="7" width="20" height="10" rx="0"/>e x1="9" y1="7" x2="9" y2="17"/></svg>',
+  book: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  calendar: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/>e x1="16" y1="2" x2="16" y2="6"/>e x1="8" y1="2" x2="8" y2="6"/>e x1="3" y1="10" x2="21" y2="10"/></svg>',
+  map: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>e x1="8" y1="2" x2="8" y2="18"/>e x1="16" y1="6" x2="16" y2="22"/></svg>',
+  star: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  coffee: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>e x1="6" y1="1" x2="6" y2="4"/>e x1="10" y1="1" x2="10" y2="4"/>e x1="14" y1="1" x2="14" y2="4"/></svg>',
+  headphone: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>',
+  heart: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+  database: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
+  door: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561z"/></svg>',
+  arrow: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8">e x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+  home: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  droplet: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+  exit: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/>e x1="21" y1="12" x2="9" y2="12"/></svg>',
+  bag: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>e x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+  info: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8">ircle cx="12" cy="12" r="10"/>e x1="12" y1="8" x2="12" y2="12"/>e x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  users: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>ircle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  warning: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>e x1="12" y1="9" x2="12" y2="13"/>e x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  chair: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M6 19V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14"/><path d="M4 15h16"/></svg>',
+  chat: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  location: '<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>ircle cx="12" cy="10" r="3"/></svg>',
+};
+
+// ── State ──
+let currentAccordion = -1;
+let selectedTag = '深度學習者';
+
+// ── Render Identity Items ──
+function renderIdentityItems(tag) {
+  const items = identityData[tag] || [];
+  const container = document.getElementById('identity-items');
+  container.innerHTML = items.map(item => `
+    <div class="sub-item" onclick='showDetail(${JSON.stringify(item.label)},${JSON.stringify(item.detail.title)},${JSON.stringify(item.detail.sub)},${JSON.stringify(item.icon)},${JSON.stringify(item.detail)})'>
+      <div class="sub-item-icon">${icons[item.icon] || icons.star}</div>
+      <div class="sub-item-text">${item.label}</div>
+      <svg class="sub-item-arrow" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+// ── Render Location Items ──
+function renderLocationItems() {
+  const container = document.getElementById('location-items');
+  container.innerHTML = locationData.map(item => `
+    <div class="sub-item" onclick='showDetail(${JSON.stringify(item.label)},${JSON.stringify(item.detail.title)},${JSON.stringify(item.detail.sub)},${JSON.stringify(item.icon)},${JSON.stringify(item.detail)})'>
+      <div class="sub-item-icon">${icons[item.icon] || icons.map}</div>
+      <div class="sub-item-text">${item.label}</div>
+      <svg class="sub-item-arrow" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+// ── Render Want Items ──
+function renderWantItems() {
+  const container = document.getElementById('want-items');
+  container.innerHTML = wantData.map(item => `
+    <div class="sub-item" onclick='showDetail(${JSON.stringify(item.label)},${JSON.stringify(item.detail.title)},${JSON.stringify(item.detail.sub)},${JSON.stringify(item.icon)},${JSON.stringify(item.detail)})'>
+      <div class="sub-item-icon">${icons[item.icon] || icons.star}</div>
+      <div class="sub-item-text">${item.label}</div>
+      <svg class="sub-item-arrow" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+// ── Render Ask Items ──
+function renderAskItems() {
+  const container = document.getElementById('ask-items');
+  container.innerHTML = askData.map((q, i) => `
+    <div class="ask-item" onclick="showAskDetail(${i})">
+      <div class="ask-number">${i+1}</div>
+      <div class="ask-text">${q}</div>
+      <svg class="sub-item-arrow" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+// ── Tag Selection ──
+function selectTag(el, tag) {
+  document.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTag = tag;
+  document.getElementById('tag-selected-0').textContent = tag;
+  renderIdentityItems(tag);
+}
+
+// ── Accordion ──
+function toggleAccordion(idx) {
+  const bodies = document.querySelectorAll('.accordion-body');
+  const headers = document.querySelectorAll('.accordion-header');
+  const chevrons = document.querySelectorAll('.accordion-chevron');
+
+  if (currentAccordion === idx) {
+    bodies[idx].classList.remove('open');
+    headers[idx].classList.remove('active');
+    chevrons[idx].classList.remove('rotated');
+    currentAccordion = -1;
+  } else {
+    if (currentAccordion >= 0) {
+      bodies[currentAccordion].classList.remove('open');
+      headers[currentAccordion].classList.remove('active');
+      chevrons[currentAccordion].classList.remove('rotated');
+    }
+    bodies[idx].classList.add('open');
+    headers[idx].classList.add('active');
+    chevrons[idx].classList.add('rotated');
+    currentAccordion = idx;
+  }
+}
+
+// ── Detail Overlay ──
+function showDetail(id, title, sub, icon, detailObj) {
+  const overlay = document.getElementById('detail-overlay');
+  const body = document.getElementById('detail-body');
+  const sectionLabel = document.getElementById('detail-section-label');
+
+  let d = detailObj;
+  if (typeof id === 'string' && (id === 'qr-location' || id === 'qr-want' || id === 'chat-open')) {
+    d = { category: title, title: title, sub: sub, info: [['狀態','功能示意'],['說明','此為原型展示頁面'],['操作','點擊返回繼續瀏覽']] };
+  }
+
+  sectionLabel.textContent = d.category || '詳細資訊';
+  body.innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-category">${d.category || ''}</div>
+      <div class="detail-title">${d.title}</div>
+      <div class="detail-subtitle">${d.sub}</div>
+    </div>
+    ${(d.info || []).map(([label, val]) => `
+      <div class="detail-info-row">
+        <div class="detail-info-icon">${icons[icon] || icons.star}</div>
+        <div class="detail-info-main">
+          <div class="detail-info-label">${label}</div>
+          <div class="detail-info-value">${val}</div>
+        </div>
+      </div>
+    `).join('')}
+    <div class="detail-badge-row">
+      <div class="detail-badge">臺灣歷史博物館</div>
+      <div class="detail-badge">2025 春季</div>
+      <div class="detail-badge">免費 Wi-Fi</div>
+    </div>
+    <div class="detail-action-row">
+      <div class="detail-action-btn btn-primary" onclick="closeDetail()">← 返回</div>
+      <div class="detail-action-btn btn-secondary" onclick="alert('已加入我的收藏')">收藏</div>
+    </div>
+  `;
+
+  overlay.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function showAskDetail(idx) {
+  const q = askData[idx];
+  const answers = [
+    '根據即時感應器資料，目前 4 號「原住民文化廳」人最少，舒適度指數 92%。建議先前往。',
+    '推薦走 A 線無障礙路線：大廳→電梯→2F 走廊→3 號展廳，全程平坦無障礙，約 5 分鐘。',
+    '今日親子導覽共 3 場：10:30、14:00（中文）及 15:30（英文），需於服務台現場報名。',
+    '是的，這條走廊設有標準無障礙坡道，坡度符合國家無障礙規範，輪椅及嬰兒車均可通行。',
+    '此文物為清朝時期臺灣原住民貿易所使用的交換器具，反映 17–19 世紀漢番交易的文化脈絡。',
+    '最近廁所距你約 15 公尺，沿走廊向東走到底右轉即到。育嬰室在廁所旁，設有哺乳椅與尿布台。',
+    '下一班接駁車為 15:00 從正門發車，目的地為臺鐵安平港站，車程約 10 分鐘。',
+  ];
+
+  const d = {
+    category: '我想問… AI 回覆',
+    title: q,
+    sub: answers[idx] || '這是模擬 AI 回答的示意頁面。',
+    info: [['回覆來源','館內 AI 導覽助理'],['語言','中文 / 英文 / 日文'],['準確度','即時資料 · 定期更新']],
+  };
+  showDetail('ask', q, d.sub, 'chat', d);
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// ── Search ──
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.querySelector('.search-bar input').focus(), 300);
+}
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// ── Menu ──
+function openMenu() {
+  document.getElementById('menu-overlay').classList.add('visible');
+  document.getElementById('menu-backdrop').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  document.getElementById('menu-overlay').classList.remove('visible');
+  document.getElementById('menu-backdrop').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// ── Init ──
+renderIdentityItems(selectedTag);
+renderLocationItems();
+renderWantItems();
+renderAskItems();
+</script>
+</body>
+</html>
